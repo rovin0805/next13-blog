@@ -1,3 +1,7 @@
 export default function Home() {
-  return <></>;
+  return (
+    <div className="h-[3000px]">
+      <h1>Home</h1>
+    </div>
+  );
 }
