@@ -2,6 +2,7 @@ import React from "react";
 import PaddingContainer from "../layout/padding-container";
 import siteConfig from "@/config/site";
 import Link from "next/link";
+import SocialLink, { PlatformType } from "../elements/social-link";
 
 const Footer = () => {
   return (
@@ -17,7 +18,15 @@ const Footer = () => {
         <div className="mt-6 flex flex-wrap justify-between gap-4">
           <div>
             <div className="text-lg font-medium">#explorerTheWorld</div>
-            <div>Social Links</div>
+            <div className="mt-2 flex items-center gap-3 text-neutral-600">
+              {Object.keys(siteConfig.socialLinks).map((platform) => (
+                <SocialLink
+                  key={platform}
+                  platform={platform as PlatformType}
+                  link={siteConfig.socialLinks[platform]}
+                />
+              ))}
+            </div>
           </div>
           <div>
             <div className="text-sm text-neutral-400">Currently At</div>
