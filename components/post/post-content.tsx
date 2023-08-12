@@ -6,7 +6,7 @@ import React from "react";
 const PostContent = ({ post }: { post: IPost }) => {
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 text-sm text-neutral-400">
+      <div className="flex items-center gap-2 text-xs text-neutral-400 @md:text-sm">
         <div
           className={`font-medium ${
             post.category.title === "Cities"
