@@ -12,23 +12,23 @@ interface IPostCard {
 
 function PostCard({ post, layout = "horizontal", reverse = false }: IPostCard) {
   return (
-    <Link
-      href={`/post/${post.slug}`}
-      // className="gird grid-cols-2 gap-10"
-      className={`${
-        layout === "horizontal" ? "flex items-center space-x-10" : "space-y-10"
-      }`}
-    >
-      <div className={`flex-1 ${reverse ? "order-last" : ""}`}>
+    <Link href={`/post/${post.slug}`}>
+      <div
+        className={`${
+          layout === "horizontal"
+            ? "grid grid-cols-1 items-center gap-10 md:grid-cols-2"
+            : "space-y-10"
+        } ${reverse ? "mt-10" : ""}`}
+      >
         <Image
           src={post.image}
           width={600}
           height={300}
           alt={post.title}
-          className="max-h-[300px] w-full rounded-md object-cover object-center"
+          className={`max-h-[300px] w-full rounded-md object-cover object-center
+             ${reverse ? "md:order-last" : ""} 
+          `}
         />
-      </div>
-      <div className="flex-1">
         <PostContent post={post} />
       </div>
     </Link>

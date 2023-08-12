@@ -26,13 +26,13 @@ function CtaCard() {
           Join me!
         </p>
 
-        <form className="mt-6 flex items-center gap-2">
+        <form className="mt-6 flex w-full items-center gap-2">
           <input
             type="email"
             placeholder="Write your email."
-            className="rounded-md bg-white/80 px-3 py-2 text-base outline-none ring-neutral-600 placeholder:text-sm focus:ring-2"
+            className="w-full rounded-md bg-white/80 px-3 py-2 text-base outline-none ring-neutral-600 placeholder:text-sm focus:ring-2 md:w-auto"
           />
-          <button className="rounded-md bg-neutral-900 px-3 py-2 text-neutral-200">
+          <button className="whitespace-nowrap rounded-md bg-neutral-900 px-3 py-2 text-neutral-200">
             Sign Up
           </button>
         </form>

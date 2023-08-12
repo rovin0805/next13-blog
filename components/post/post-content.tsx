@@ -24,8 +24,12 @@ const PostContent = ({ post }: { post: IPost }) => {
         <div>{getRelativeTime(post.date_created)}</div>
       </div>
 
-      <h2 className="text-3 xl font-medium">{post.title}</h2>
-      <p className="leading-snug text-neutral-600">{post.description}</p>
+      <h2 className="@lg:text-3 xl text-xl font-medium @md:text-2xl">
+        {post.title}
+      </h2>
+      <p className="text-base leading-snug text-neutral-600 @lg:text-lg">
+        {post.description}
+      </p>
 
       <div className="flex items-center gap-2 pt-3">
         Read More <ArrowRight size="14" />
