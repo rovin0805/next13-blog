@@ -25,7 +25,7 @@ function PostCard({ post, layout = "horizontal", reverse = false }: IPostCard) {
           width={600}
           height={300}
           alt={post.title}
-          className={`max-h-[300px] w-full rounded-md object-cover object-center
+          className={`h-full max-h-[300px] w-full rounded-md object-cover object-center
              ${reverse ? "md:order-last" : ""} 
           `}
         />

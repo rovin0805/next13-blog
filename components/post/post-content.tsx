@@ -3,10 +3,19 @@ import { IPost } from "@/types/database";
 import { ArrowRight } from "lucide-react";
 import React from "react";
 
-const PostContent = ({ post }: { post: IPost }) => {
+interface IPostContent {
+  post: IPost;
+  isPostPage?: boolean;
+}
+
+const PostContent = ({ post, isPostPage = false }: IPostContent) => {
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 text-xs text-neutral-400 @md:text-sm">
+      <div
+        className={`flex flex-wrap items-center gap-2 text-neutral-400 ${
+          isPostPage ? "text-sm" : "text-xs @md:text-sm"
+        }`}
+      >
         <div
           className={`font-medium ${
             post.category.title === "Cities"
@@ -24,16 +33,24 @@ const PostContent = ({ post }: { post: IPost }) => {
         <div>{getRelativeTime(post.date_created)}</div>
       </div>
 
-      <h2 className="@lg:text-3 xl text-xl font-medium @md:text-2xl">
+      <h2
+        className={`${
+          isPostPage
+            ? "text-2xl font-bold md:text-3xl lg:text-4xl"
+            : "text-xl font-medium @md:text-2xl @lg:text-3xl"
+        }`}
+      >
         {post.title}
       </h2>
       <p className="text-base leading-snug text-neutral-600 @lg:text-lg">
         {post.description}
       </p>
 
-      <div className="flex items-center gap-2 pt-3">
-        Read More <ArrowRight size="14" />
-      </div>
+      {!isPostPage && (
+        <div className="flex items-center gap-2 pt-3">
+          Read More <ArrowRight size="14" />
+        </div>
+      )}
     </div>
   );
 };

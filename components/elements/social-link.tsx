@@ -20,9 +20,10 @@ export type PlatformType =
 interface ISocialLink {
   platform: PlatformType;
   link: string;
+  isSharedUrl?: boolean;
 }
 
-const SocialLink = ({ platform, link }: ISocialLink) => {
+const SocialLink = ({ platform, link, isSharedUrl = false }: ISocialLink) => {
   const getIcon = () => {
     switch (platform) {
       case "facebook": {
@@ -48,7 +49,16 @@ const SocialLink = ({ platform, link }: ISocialLink) => {
 
   return (
     <Link href={link} target="_blank">
-      {getIcon()}
+      <div
+        className={`${
+          isSharedUrl
+            ? `rounded-md bg-neutral-200 px-3 py-2 text-neutral-600 transition-colors 
+            duration-100 ease-in-out hover:bg-neutral-600 hover:text-neutral-100`
+            : ""
+        }`}
+      >
+        {getIcon()}
+      </div>
     </Link>
   );
 };
