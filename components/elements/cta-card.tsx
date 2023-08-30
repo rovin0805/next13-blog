@@ -1,7 +1,43 @@
+import directus from "@/lib/directus";
+import { revalidateTag } from "next/cache";
 import Image from "next/image";
 import React from "react";
 
-function CtaCard() {
+export const REVALIDATE_TAG = "subscribers-count";
+
+async function CtaCard() {
+  // TODO: fix
+  async function formAction(formData: FormData) {
+    "use server";
+    try {
+      const email = formData.get("email");
+      await directus.items("subscribers").createOne({ email });
+      revalidateTag(REVALIDATE_TAG);
+    } catch (error) {
+      console.log("🚀 ~ file: cta-card.tsx:9 ~ formAction ~ error:", error);
+    }
+  }
+
+  const subscribersCount = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/items/subscribers?meta=total_count&access_token=${process.env.ADMIN_TOKEN}`,
+    {
+      next: {
+        tags: [REVALIDATE_TAG],
+      },
+    },
+  )
+    .then((res) => res.json())
+    .then((res) => {
+      if (!!res.errors) {
+        throw new Error(res.errors[0].message);
+      }
+      return res.meta.total_count;
+    })
+    .catch((err) => {
+      console.log("🚀 ~ file: cta-card.tsx:29 ~ .catch ~ err:", err);
+      return 0;
+    });
+
   return (
     <div className="relative overflow-hidden rounded-md bg-slate-100 px-6 py-10">
       <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/95 via-white/60 to-white/30" />
@@ -26,7 +62,11 @@ function CtaCard() {
           Join me!
         </p>
 
-        <form className="mt-6 flex w-full items-center gap-2">
+        <form
+          key={subscribersCount + "form"}
+          action={formAction}
+          className="mt-6 flex w-full items-center gap-2"
+        >
           <input
             type="email"
             placeholder="Write your email."
@@ -36,6 +76,14 @@ function CtaCard() {
             Sign Up
           </button>
         </form>
+
+        <div className="mt-5 text-neutral-700">
+          Join our{" "}
+          <span className="rounded-md bg-neutral-700 px-2 py-1 text-sm text-neutral-100">
+            {subscribersCount}
+          </span>{" "}
+          subscribers now!
+        </div>
       </div>
     </div>
   );

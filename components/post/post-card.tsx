@@ -21,7 +21,7 @@ function PostCard({ post, layout = "horizontal", reverse = false }: IPostCard) {
         } ${reverse ? "mt-10" : ""}`}
       >
         <Image
-          src={post.image}
+          src={`${process.env.NEXT_PUBLIC_ASSETS_URL}/${post.image}?key=optimizer`}
           width={600}
           height={300}
           alt={post.title}

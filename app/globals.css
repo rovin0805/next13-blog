@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .parsed-body h2 {
+    @apply mt-3 text-3xl font-semibold text-neutral-900;
+  }
+  .parsed-body h3 {
+    @apply mt-3 text-2xl font-semibold text-neutral-900;
+  }
+  .parsed-body h4 {
+    @apply mt-3 text-xl font-semibold text-neutral-900;
+  }
+  .parsed-body p {
+    @apply mb-3 leading-snug text-neutral-700;
+  }
+}

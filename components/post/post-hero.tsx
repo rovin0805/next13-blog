@@ -8,7 +8,7 @@ function PostHero({ post }: { post: IPost }) {
     <div>
       <PostContent post={post} isPostPage />
       <Image
-        src={post.image}
+        src={`${process.env.NEXT_PUBLIC_ASSETS_URL}/${post.image}?key=optimizer`}
         width={1200}
         height={500}
         className="mt-6 h-[300px] rounded-md object-cover object-center md:h-[500px]"

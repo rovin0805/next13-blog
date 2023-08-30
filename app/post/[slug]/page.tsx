@@ -1,16 +1,34 @@
 import React from "react";
-import { DUMMY_POSTS } from "@/DUMMY_DATA";
 import { notFound } from "next/navigation";
 import PaddingContainer from "@/components/layout/padding-container";
 import PostHero from "@/components/post/post-hero";
 import SocialLink from "@/components/elements/social-link";
 import PostBody from "@/components/post/post-body";
 import CtaCard from "@/components/elements/cta-card";
+import directus from "@/lib/directus";
+import { IPost } from "@/types/database";
 
 export const generateStaticParams = async () => {
-  return DUMMY_POSTS.map((post) => ({
-    slug: post.slug,
-  }));
+  try {
+    const posts = await directus.items("post").readByQuery({
+      filter: {
+        status: {
+          _eq: "published",
+        },
+      },
+      fields: ["slug"],
+    });
+    const params = posts?.data?.map((post) => ({
+      slug: post.slug as string,
+    }));
+    return params || [];
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: page.tsx:26 ~ generateStaticParams ~ error:",
+      error,
+    );
+    return [];
+  }
 };
 
 interface PageParams {
@@ -19,9 +37,33 @@ interface PageParams {
   };
 }
 
-function Page({ params: { slug } }: PageParams) {
-  const SHARE_URL = process.env.NEXT_PUBLIC_SITE_URL + `/post/${slug}`;
-  const post = DUMMY_POSTS.find((post) => post.slug === slug);
+async function PostPage({ params: { slug: paramsSlug } }: PageParams) {
+  const SHARE_URL = process.env.NEXT_PUBLIC_SITE_URL + `/post/${paramsSlug}`;
+
+  const getPostData = async () => {
+    try {
+      const post = await directus.items("post").readByQuery({
+        filter: {
+          slug: {
+            _eq: paramsSlug,
+          },
+        },
+        fields: [
+          "*",
+          "category.id",
+          "category.title",
+          "author.id",
+          "author.first_name",
+          "author.last_name",
+        ],
+      });
+      return post?.data?.[0];
+    } catch (error) {
+      console.log("🚀 ~ file: page.tsx:60 ~ getPostData ~ error:", error);
+    }
+  };
+
+  const post: IPost = await getPostData();
 
   if (!post) {
     notFound();
@@ -63,4 +105,4 @@ function Page({ params: { slug } }: PageParams) {
   );
 }
 
-export default Page;
+export default PostPage;
