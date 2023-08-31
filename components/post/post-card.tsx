@@ -8,11 +8,17 @@ interface IPostCard {
   post: IPost;
   layout?: "vertical" | "horizontal";
   reverse?: boolean;
+  locale: string;
 }
 
-function PostCard({ post, layout = "horizontal", reverse = false }: IPostCard) {
+function PostCard({
+  post,
+  layout = "horizontal",
+  reverse = false,
+  locale,
+}: IPostCard) {
   return (
-    <Link href={`/post/${post.slug}`}>
+    <Link href={`/${locale}/post/${post.slug}`}>
       <div
         className={`${
           layout === "horizontal"
@@ -29,7 +35,7 @@ function PostCard({ post, layout = "horizontal", reverse = false }: IPostCard) {
              ${reverse ? "md:order-last" : ""} 
           `}
         />
-        <PostContent post={post} />
+        <PostContent post={post} locale={locale} />
       </div>
     </Link>
   );

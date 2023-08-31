@@ -1,11 +1,14 @@
 import directus from "@/lib/directus";
+import { getDictionary } from "@/lib/getDictionary";
 import { revalidateTag } from "next/cache";
 import Image from "next/image";
 import React from "react";
 
 export const REVALIDATE_TAG = "subscribers-count";
 
-async function CtaCard() {
+async function CtaCard({ locale }: { locale: string }) {
+  const dictionary = await getDictionary(locale);
+
   // TODO: fix
   async function formAction(formData: FormData) {
     "use server";
@@ -54,12 +57,10 @@ async function CtaCard() {
       <div className="relative z-20">
         <div className="text-lg font-medium">#exploreTheWorld</div>
         <h3 className="mt-3 text-4xl font-semibold">
-          Explore the world with me!
+          {dictionary.ctaCard.title}
         </h3>
         <p className="mt-2 max-w-lg text-lg">
-          Explore the world with me! {"I'"}m traveling around the world. {"I'"}
-          ve visited most of countries and currently {"I'"}m traveling in Korea!
-          Join me!
+          {dictionary.ctaCard.description}
         </p>
 
         <form
@@ -69,20 +70,20 @@ async function CtaCard() {
         >
           <input
             type="email"
-            placeholder="Write your email."
+            placeholder={dictionary.ctaCard.placeholder}
             className="w-full rounded-md bg-white/80 px-3 py-2 text-base outline-none ring-neutral-600 placeholder:text-sm focus:ring-2 md:w-auto"
           />
           <button className="whitespace-nowrap rounded-md bg-neutral-900 px-3 py-2 text-neutral-200">
-            Sign Up
+            {dictionary.ctaCard.button}
           </button>
         </form>
 
         <div className="mt-5 text-neutral-700">
-          Join our{" "}
+          {dictionary.ctaCard.subscriberText1}{" "}
           <span className="rounded-md bg-neutral-700 px-2 py-1 text-sm text-neutral-100">
             {subscribersCount}
           </span>{" "}
-          subscribers now!
+          {dictionary.ctaCard.subscriberText2}
         </div>
       </div>
     </div>

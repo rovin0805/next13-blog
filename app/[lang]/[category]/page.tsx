@@ -15,10 +15,20 @@ export const generateStaticParams = async () => {
       },
       fields: ["slug"],
     });
+
     const params = categories?.data?.map((category) => ({
       category: category.slug as string,
+      lang: "en",
     }));
-    return params || [];
+
+    const localizedParams = categories?.data?.map((category) => ({
+      category: category.slug as string,
+      lang: "kr",
+    }));
+
+    const allParams = params?.concat(localizedParams ?? []);
+
+    return allParams || [];
   } catch (error) {
     console.log(
       "🚀 ~ file: page.tsx:23 ~ generateStaticParams ~ error:",
@@ -31,6 +41,7 @@ export const generateStaticParams = async () => {
 interface PageParams {
   params: {
     category: string;
+    lang: string;
   };
 }
 
@@ -44,7 +55,7 @@ interface Category {
 }
 
 const CategoryPage = async ({
-  params: { category: paramsCategory },
+  params: { category: paramsCategory, lang },
 }: PageParams) => {
   const getCategoryData = async () => {
     try {
@@ -56,15 +67,41 @@ const CategoryPage = async ({
         },
         fields: [
           "*",
+          "translations.*",
           "posts.*",
           "posts.author.id",
           "posts.author.first_name",
           "posts.author.last_name",
           "posts.category.id",
           "posts.category.title",
+          "posts.translations.*",
         ],
       });
-      return categoryData?.data?.[0];
+
+      const category = categoryData?.data?.[0];
+
+      if (lang === "en") {
+        return category;
+      } else {
+        const localizedCategory = {
+          ...category,
+          title: category.translations[0].title,
+          description: category.translations[0].description,
+          posts: category.posts.map((post: any) => {
+            return {
+              ...post,
+              title: post.translations[0].title,
+              description: post.translations[0].description,
+              body: post.translations[0].body,
+              category: {
+                ...post.category,
+                title: category.translations[0].title,
+              },
+            };
+          }),
+        };
+        return localizedCategory;
+      }
     } catch (error) {
       console.log("🚀 ~ file: page.tsx:23 ~ getCategoryData ~ error:", error);
     }
@@ -82,7 +119,7 @@ const CategoryPage = async ({
         <h1 className="text-4xl font-semibold">{category?.title}</h1>
         <p className="text-lg text-neutral-600">{category?.description}</p>
       </div>
-      <PostList posts={category.posts} />
+      <PostList posts={category.posts} locale={lang} />
     </PaddingContainer>
   );
 };

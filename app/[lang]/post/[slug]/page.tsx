@@ -18,10 +18,21 @@ export const generateStaticParams = async () => {
       },
       fields: ["slug"],
     });
+
     const params = posts?.data?.map((post) => ({
       slug: post.slug as string,
     }));
-    return params || [];
+
+    const localizedParams = posts?.data?.map((post) => {
+      return {
+        slug: post.slug as string,
+        lang: "de",
+      };
+    });
+
+    const allParams = params?.concat(localizedParams ?? []);
+
+    return allParams || [];
   } catch (error) {
     console.log(
       "🚀 ~ file: page.tsx:26 ~ generateStaticParams ~ error:",
@@ -34,10 +45,11 @@ export const generateStaticParams = async () => {
 interface PageParams {
   params: {
     slug: string;
+    lang: string;
   };
 }
 
-async function PostPage({ params: { slug: paramsSlug } }: PageParams) {
+async function PostPage({ params: { slug: paramsSlug, lang } }: PageParams) {
   const SHARE_URL = process.env.NEXT_PUBLIC_SITE_URL + `/post/${paramsSlug}`;
 
   const getPostData = async () => {
@@ -52,12 +64,32 @@ async function PostPage({ params: { slug: paramsSlug } }: PageParams) {
           "*",
           "category.id",
           "category.title",
-          "author.id",
+          "auhtor.id",
           "author.first_name",
           "author.last_name",
+          "translations.*",
+          "category.translations.*",
         ],
       });
-      return post?.data?.[0];
+
+      const postData = post?.data?.[0];
+
+      if (lang === "en") {
+        return postData;
+      } else {
+        const localizedPostData = {
+          ...postData,
+          title: postData?.translations?.[0]?.title,
+          description: postData?.translations?.[0]?.description,
+          body: postData?.translations?.[0]?.body,
+          category: {
+            ...postData?.category,
+            title: postData?.category?.translations?.[0]?.title,
+          },
+        };
+
+        return localizedPostData;
+      }
     } catch (error) {
       console.log("🚀 ~ file: page.tsx:60 ~ getPostData ~ error:", error);
     }
@@ -72,7 +104,7 @@ async function PostPage({ params: { slug: paramsSlug } }: PageParams) {
   return (
     <PaddingContainer>
       <div className="space-y-10">
-        <PostHero post={post} />
+        <PostHero post={post} locale={lang} />
 
         <div className="flex flex-col gap-10 md:flex-row">
           <div className="relative">
@@ -99,7 +131,7 @@ async function PostPage({ params: { slug: paramsSlug } }: PageParams) {
           <PostBody body={post.body} />
         </div>
 
-        <CtaCard />
+        <CtaCard locale={lang} />
       </div>
     </PaddingContainer>
   );

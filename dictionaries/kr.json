@@ -1,0 +1,25 @@
+{
+  "navigation": {
+    "links": {
+      "cities": "도시들",
+      "experiences": "경험들"
+    }
+  },
+  "buttons": {
+    "readMore": "더 읽기"
+  },
+  "ctaCard": {
+    "title": "나와 함께 세계를 탐험하세요!",
+    "description": "나와 함께 세계를 탐험하세요! 저는 전 세계를 여행하며 대부분의 나라를 방문했으며 현재는 한국을 여행 중입니다! 함께 해보세요!",
+    "button": "가입하기",
+    "placeholder": "이메일을 입력하세요",
+    "subscriberText1": "우리의",
+    "subscriberText2": "구독자에 가입하세요!"
+  },
+  "footer": {
+    "description": "세계의 경험들과 도시들을 공유하는 미니멀하고 사랑스러운 여행 블로그!",
+    "rightsText": "모든 권리 보유 | 저작권",
+    "creatorText": "사랑으로 만들었습니다 by",
+    "currentlyAtText": "현재"
+  }
+}

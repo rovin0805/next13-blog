@@ -3,10 +3,15 @@ import React from "react";
 import PostContent from "./post-content";
 import Image from "next/image";
 
-function PostHero({ post }: { post: IPost }) {
+interface IPostHero {
+  post: IPost;
+  locale: string;
+}
+
+function PostHero({ post, locale }: IPostHero) {
   return (
     <div>
-      <PostContent post={post} isPostPage />
+      <PostContent post={post} isPostPage locale={locale} />
       <Image
         src={`${process.env.NEXT_PUBLIC_ASSETS_URL}/${post.image}?key=optimizer`}
         width={1200}
