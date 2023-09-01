@@ -7,6 +7,7 @@ import PostBody from "@/components/post/post-body";
 import CtaCard from "@/components/elements/cta-card";
 import directus from "@/lib/directus";
 import { IPost } from "@/types/database";
+import siteConfig from "@/config/site";
 
 export const generateStaticParams = async () => {
   try {
@@ -129,12 +130,35 @@ async function PostPage({ params: { slug: paramsSlug, lang } }: PageParams) {
 
   const post: IPost = await getPostData(paramsSlug, lang);
 
+  /* Structured Data for Google */
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    image: `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}/post/${paramsSlug}/opengraph-image.png`,
+    author: post.author.first_name + " " + post.author.last_name,
+    genre: post.category.title,
+    publisher: siteConfig.siteName,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/post/${paramsSlug}`,
+    datePublished: new Date(post.date_created).toISOString(),
+    dateCreated: new Date(post.date_created).toISOString(),
+    dateModified: new Date(post.date_updated).toISOString(),
+    description: post.description,
+    articleBody: post.body,
+  };
+
   if (!post) {
     notFound();
   }
 
   return (
     <PaddingContainer>
+      {/* Add JSON-LD to your page */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <div className="space-y-10">
         <PostHero post={post} locale={lang} />
 
