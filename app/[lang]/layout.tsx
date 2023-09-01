@@ -3,13 +3,13 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Footer from "@/components/navigation/footer";
+import siteConfig from "@/config/site";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Next Blog",
-  description:
-    "Learn how to build a full-stack, multilingual and high performant blog website with Next.js 13.4 and Directus.",
+  title: siteConfig.siteName,
+  description: siteConfig.description,
 };
 
 export default function RootLayout({
