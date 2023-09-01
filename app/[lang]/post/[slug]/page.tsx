@@ -1,4 +1,4 @@
-import React from "react";
+import React, { cache } from "react";
 import { notFound } from "next/navigation";
 import PaddingContainer from "@/components/layout/padding-container";
 import PostHero from "@/components/post/post-hero";
@@ -49,53 +49,63 @@ interface PageParams {
   };
 }
 
+export const getPostData = cache(async (paramsSlug: string, locale: string) => {
+  try {
+    const post = await directus.items("post").readByQuery({
+      filter: {
+        slug: {
+          _eq: paramsSlug,
+        },
+      },
+      fields: [
+        "*",
+        "category.id",
+        "category.title",
+        "auhtor.id",
+        "author.first_name",
+        "author.last_name",
+        "translations.*",
+        "category.translations.*",
+      ],
+    });
+
+    const postData = post?.data?.[0];
+
+    if (locale === "en") {
+      return postData;
+    } else {
+      const localizedPostData = {
+        ...postData,
+        title: postData?.translations?.[0]?.title,
+        description: postData?.translations?.[0]?.description,
+        body: postData?.translations?.[0]?.body,
+        category: {
+          ...postData?.category,
+          title: postData?.category?.translations?.[0]?.title,
+        },
+      };
+
+      return localizedPostData;
+    }
+  } catch (error) {
+    console.log("🚀 ~ file: page.tsx:60 ~ getPostData ~ error:", error);
+  }
+});
+
+export const generateMetaData = async ({
+  params: { lang, slug },
+}: PageParams) => {
+  const post = await getPostData(slug, lang);
+  return {
+    title: post?.title,
+    description: post?.description,
+  };
+};
+
 async function PostPage({ params: { slug: paramsSlug, lang } }: PageParams) {
   const SHARE_URL = process.env.NEXT_PUBLIC_SITE_URL + `/post/${paramsSlug}`;
 
-  const getPostData = async () => {
-    try {
-      const post = await directus.items("post").readByQuery({
-        filter: {
-          slug: {
-            _eq: paramsSlug,
-          },
-        },
-        fields: [
-          "*",
-          "category.id",
-          "category.title",
-          "auhtor.id",
-          "author.first_name",
-          "author.last_name",
-          "translations.*",
-          "category.translations.*",
-        ],
-      });
-
-      const postData = post?.data?.[0];
-
-      if (lang === "en") {
-        return postData;
-      } else {
-        const localizedPostData = {
-          ...postData,
-          title: postData?.translations?.[0]?.title,
-          description: postData?.translations?.[0]?.description,
-          body: postData?.translations?.[0]?.body,
-          category: {
-            ...postData?.category,
-            title: postData?.category?.translations?.[0]?.title,
-          },
-        };
-
-        return localizedPostData;
-      }
-    } catch (error) {
-      console.log("🚀 ~ file: page.tsx:60 ~ getPostData ~ error:", error);
-    }
-  };
-
-  const post: IPost = await getPostData();
+  const post: IPost = await getPostData(paramsSlug, lang);
 
   if (!post) {
     notFound();

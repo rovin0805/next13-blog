@@ -3,7 +3,14 @@ import PostList from "@/components/post/post-list";
 import directus from "@/lib/directus";
 import { IPost } from "@/types/database";
 import { notFound } from "next/navigation";
-import React from "react";
+import React, { cache } from "react";
+
+interface PageParams {
+  params: {
+    category: string;
+    lang: string;
+  };
+}
 
 export const generateStaticParams = async () => {
   try {
@@ -38,31 +45,13 @@ export const generateStaticParams = async () => {
   }
 };
 
-interface PageParams {
-  params: {
-    category: string;
-    lang: string;
-  };
-}
-
-interface Category {
-  id: string;
-  status: "published";
-  title: "Cities" | "Experiences";
-  slug: "cities" | "experiences";
-  description: string;
-  posts: IPost[];
-}
-
-const CategoryPage = async ({
-  params: { category: paramsCategory, lang },
-}: PageParams) => {
-  const getCategoryData = async () => {
+export const getCategoryData = cache(
+  async (categorySlug: string, locale: string) => {
     try {
       const categoryData = await directus.items("category").readByQuery({
         filter: {
           slug: {
-            _eq: paramsCategory,
+            _eq: categorySlug,
           },
         },
         fields: [
@@ -80,7 +69,7 @@ const CategoryPage = async ({
 
       const category = categoryData?.data?.[0];
 
-      if (lang === "en") {
+      if (locale === "en") {
         return category;
       } else {
         const localizedCategory = {
@@ -105,9 +94,32 @@ const CategoryPage = async ({
     } catch (error) {
       console.log("🚀 ~ file: page.tsx:23 ~ getCategoryData ~ error:", error);
     }
-  };
+  },
+);
 
-  const category: Category = await getCategoryData();
+export const generateMetaData = async ({
+  params: { lang, category },
+}: PageParams) => {
+  const categoryData = await getCategoryData(category, lang);
+  return {
+    title: categoryData?.title,
+    description: categoryData?.description,
+  };
+};
+
+interface Category {
+  id: string;
+  status: "published";
+  title: "Cities" | "Experiences";
+  slug: "cities" | "experiences";
+  description: string;
+  posts: IPost[];
+}
+
+const CategoryPage = async ({
+  params: { category: paramsCategory, lang },
+}: PageParams) => {
+  const category: Category = await getCategoryData(paramsCategory, lang);
 
   if (!category) {
     notFound();
