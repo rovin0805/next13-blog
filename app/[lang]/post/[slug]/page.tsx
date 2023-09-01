@@ -114,6 +114,13 @@ export const generateMetaData = async ({
       locale: lang,
       type: "website",
     },
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/post/${slug}`,
+      languages: {
+        "en-US": `${process.env.NEXT_PUBLIC_SITE_URL}/en/post/${slug}`,
+        "kr-KOR": `${process.env.NEXT_PUBLIC_SITE_URL}/kr/post/${slug}`,
+      },
+    },
   };
 };
 
