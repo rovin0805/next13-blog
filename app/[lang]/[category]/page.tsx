@@ -104,6 +104,21 @@ export const generateMetaData = async ({
   return {
     title: categoryData?.title,
     description: categoryData?.description,
+    openGraph: {
+      title: categoryData?.title,
+      description: categoryData?.description,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}/${category}`,
+      siteName: categoryData?.title,
+      /* images: [
+        {
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}/${category}/opengraph-image.png`,
+          width: 1200,
+          height: 628,
+        },
+      ], */
+      locale: lang,
+      type: "website",
+    },
   };
 };
 
