@@ -48,6 +48,9 @@ export const generateMetadata = async ({
         "kr-KOR": `${process.env.NEXT_PUBLIC_SITE_URL}/kr`,
       },
     },
+    verification: {
+      google: "_uYgVeerWSn62jwPdybjAzYyJiOA2NfyQQVj8h-DYE",
+    },
   };
 };
 
