@@ -28,7 +28,7 @@ export const generateStaticParams = async () => {
     const localizedParams = posts?.data?.map((post) => {
       return {
         slug: post.slug as string,
-        lang: "de",
+        lang: "kr",
       };
     });
 
@@ -51,7 +51,7 @@ interface PageParams {
   };
 }
 
-export const generateMetaData = async ({
+export const generateMetadata = async ({
   params: { lang, slug },
 }: PageParams) => {
   const post = await getPostData(slug, lang);

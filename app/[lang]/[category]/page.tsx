@@ -45,10 +45,11 @@ export const generateStaticParams = async () => {
   }
 };
 
-export const generateMetaData = async ({
+export const generateMetadata = async ({
   params: { lang, category },
 }: PageParams) => {
   const categoryData = await getCategoryData(category, lang);
+
   return {
     title: categoryData?.title,
     description: categoryData?.description,
