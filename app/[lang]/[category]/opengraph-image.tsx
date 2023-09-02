@@ -1,5 +1,5 @@
+import { getCategoryData } from "@/apis/category";
 import { ImageResponse } from "next/server";
-import { getCategoryData } from "./page";
 
 export const size = {
   width: 1200,

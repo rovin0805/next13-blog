@@ -1,4 +1,4 @@
-import directus from "@/lib/directus";
+import directus from "@/apis/directus";
 import { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

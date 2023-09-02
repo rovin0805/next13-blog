@@ -1,14 +1,14 @@
-import React, { cache } from "react";
 import { notFound } from "next/navigation";
 import PaddingContainer from "@/components/layout/padding-container";
 import PostHero from "@/components/post/post-hero";
 import SocialLink from "@/components/elements/social-link";
 import PostBody from "@/components/post/post-body";
 import CtaCard from "@/components/elements/cta-card";
-import directus from "@/lib/directus";
 import { IPost } from "@/types/database";
 import siteConfig from "@/config/site";
 import { getDictionary } from "@/lib/getDictionary";
+import { getPostData } from "@/apis/post";
+import directus from "@/apis/directus";
 
 export const generateStaticParams = async () => {
   try {
@@ -50,49 +50,6 @@ interface PageParams {
     lang: string;
   };
 }
-
-export const getPostData = cache(async (paramsSlug: string, locale: string) => {
-  try {
-    const post = await directus.items("post").readByQuery({
-      filter: {
-        slug: {
-          _eq: paramsSlug,
-        },
-      },
-      fields: [
-        "*",
-        "category.id",
-        "category.title",
-        "auhtor.id",
-        "author.first_name",
-        "author.last_name",
-        "translations.*",
-        "category.translations.*",
-      ],
-    });
-
-    const postData = post?.data?.[0];
-
-    if (locale === "en") {
-      return postData;
-    } else {
-      const localizedPostData = {
-        ...postData,
-        title: postData?.translations?.[0]?.title,
-        description: postData?.translations?.[0]?.description,
-        body: postData?.translations?.[0]?.body,
-        category: {
-          ...postData?.category,
-          title: postData?.category?.translations?.[0]?.title,
-        },
-      };
-
-      return localizedPostData;
-    }
-  } catch (error) {
-    console.log("🚀 ~ file: page.tsx:60 ~ getPostData ~ error:", error);
-  }
-});
 
 export const generateMetaData = async ({
   params: { lang, slug },

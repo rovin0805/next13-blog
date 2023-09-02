@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/server";
-import { getPostData } from "./page";
 import { getReadingTime, getRelativeTime } from "@/lib/helper";
+import { getPostData } from "@/apis/post";
 
 export const size = {
   width: 1200,

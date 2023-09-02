@@ -1,6 +1,6 @@
 "use client";
 
-import directusClient from "@/lib/directus-client";
+import directusClient from "@/apis/directus-client";
 import Image from "next/image";
 import React, { FormEvent, useState } from "react";
 

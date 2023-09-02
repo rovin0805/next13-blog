@@ -1,9 +1,9 @@
+import { getCategoryData } from "@/apis/category";
+import directus from "@/apis/directus";
 import PaddingContainer from "@/components/layout/padding-container";
 import PostList from "@/components/post/post-list";
-import directus from "@/lib/directus";
 import { IPost } from "@/types/database";
 import { notFound } from "next/navigation";
-import React, { cache } from "react";
 
 interface PageParams {
   params: {
@@ -44,58 +44,6 @@ export const generateStaticParams = async () => {
     return [];
   }
 };
-
-export const getCategoryData = cache(
-  async (categorySlug: string, locale: string) => {
-    try {
-      const categoryData = await directus.items("category").readByQuery({
-        filter: {
-          slug: {
-            _eq: categorySlug,
-          },
-        },
-        fields: [
-          "*",
-          "translations.*",
-          "posts.*",
-          "posts.author.id",
-          "posts.author.first_name",
-          "posts.author.last_name",
-          "posts.category.id",
-          "posts.category.title",
-          "posts.translations.*",
-        ],
-      });
-
-      const category = categoryData?.data?.[0];
-
-      if (locale === "en") {
-        return category;
-      } else {
-        const localizedCategory = {
-          ...category,
-          title: category.translations[0].title,
-          description: category.translations[0].description,
-          posts: category.posts.map((post: any) => {
-            return {
-              ...post,
-              title: post.translations[0].title,
-              description: post.translations[0].description,
-              body: post.translations[0].body,
-              category: {
-                ...post.category,
-                title: category.translations[0].title,
-              },
-            };
-          }),
-        };
-        return localizedCategory;
-      }
-    } catch (error) {
-      console.log("🚀 ~ file: page.tsx:23 ~ getCategoryData ~ error:", error);
-    }
-  },
-);
 
 export const generateMetaData = async ({
   params: { lang, category },
