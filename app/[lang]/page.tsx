@@ -3,6 +3,7 @@ import PaddingContainer from "@/components/layout/padding-container";
 import PostCard from "@/components/post/post-card";
 import PostList from "@/components/post/post-list";
 import directus from "@/lib/directus";
+import { getDictionary } from "@/lib/getDictionary";
 import { IPost } from "@/types/database";
 import { notFound } from "next/navigation";
 
@@ -56,6 +57,8 @@ export default async function Home({ params: { lang } }: HomeParams) {
     notFound();
   }
 
+  const dictionary = await getDictionary(lang);
+
   return (
     <PaddingContainer>
       <main className="h-auto space-y-10 ">
@@ -66,7 +69,7 @@ export default async function Home({ params: { lang } }: HomeParams) {
           posts={post.filter((_, index) => index > 0 && index < 3)}
         />
 
-        <CtaCard locale={lang} />
+        <CtaCard dictionary={dictionary} />
 
         <PostCard post={post[3]} reverse locale={lang} />
 

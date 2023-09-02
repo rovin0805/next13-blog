@@ -8,6 +8,7 @@ import CtaCard from "@/components/elements/cta-card";
 import directus from "@/lib/directus";
 import { IPost } from "@/types/database";
 import siteConfig from "@/config/site";
+import { getDictionary } from "@/lib/getDictionary";
 
 export const generateStaticParams = async () => {
   try {
@@ -151,6 +152,8 @@ async function PostPage({ params: { slug: paramsSlug, lang } }: PageParams) {
     articleBody: post.body,
   };
 
+  const dictionary = await getDictionary(lang);
+
   return (
     <PaddingContainer>
       {/* Add JSON-LD to your page */}
@@ -187,7 +190,7 @@ async function PostPage({ params: { slug: paramsSlug, lang } }: PageParams) {
           <PostBody body={post.body} />
         </div>
 
-        <CtaCard locale={lang} />
+        <CtaCard dictionary={dictionary} />
       </div>
     </PaddingContainer>
   );
