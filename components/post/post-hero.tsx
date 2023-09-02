@@ -13,6 +13,7 @@ function PostHero({ post, locale }: IPostHero) {
     <div>
       <PostContent post={post} isPostPage locale={locale} />
       <Image
+        priority
         src={`${process.env.NEXT_PUBLIC_ASSETS_URL}/${post.image}?key=optimizer`}
         width={1200}
         height={500}
