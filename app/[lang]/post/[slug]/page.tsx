@@ -130,6 +130,10 @@ async function PostPage({ params: { slug: paramsSlug, lang } }: PageParams) {
 
   const post: IPost = await getPostData(paramsSlug, lang);
 
+  if (!post) {
+    notFound();
+  }
+
   /* Structured Data for Google */
   const jsonLd = {
     "@context": "https://schema.org",
@@ -146,10 +150,6 @@ async function PostPage({ params: { slug: paramsSlug, lang } }: PageParams) {
     description: post.description,
     articleBody: post.body,
   };
-
-  if (!post) {
-    notFound();
-  }
 
   return (
     <PaddingContainer>
